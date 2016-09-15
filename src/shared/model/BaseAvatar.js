@@ -25,6 +25,7 @@ function BaseAvatar(player)
     this.roundScore      = 0;
     this.ready           = false;
     this.present         = true;
+    this.speeding        = 1;
 
     // useless too? this.updateVelocities();
 }
@@ -132,6 +133,19 @@ BaseAvatar.prototype.updateAngularVelocity = function(factor)
 };
 
 /**
+* Update speeding
+*
+* @param {Number} factor
+*/
+BaseAvatar.prototype.updateSpeeding = function(speeding)
+{
+    if (typeof(speeding) === 'undefined') {
+        this.speeding = 1;
+    } else {
+        this.speeding = speeding;
+    }
+};
+/**
  * Set angular velocity
  *
  * @param {Float} angularVelocity
@@ -199,7 +213,7 @@ BaseAvatar.prototype.updatePosition = function(step)
 BaseAvatar.prototype.setVelocity = function(velocity)
 {
     velocity = Math.max(velocity, BaseAvatar.prototype.velocity/2);
-
+    velocity = velocity * this.speeding;
     if (this.velocity !== velocity) {
         this.velocity = velocity;
         this.updateVelocities();

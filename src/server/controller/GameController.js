@@ -33,7 +33,8 @@ function GameController(game)
 
     this.callbacks = {
         onReady: function () { controller.onReady(this); },
-        onMove: function (data) { controller.onMove(this, data); }
+        onMove: function (data) { controller.onMove(this, data); },
+        onSpeeding: function (data) { controller.onSpeeding(this, data); }
     };
 
     this.loadGame();
@@ -145,6 +146,7 @@ GameController.prototype.attachEvents = function(client)
 
     if (!client.players.isEmpty()) {
         client.on('player:move', this.callbacks.onMove);
+        client.on('player:speeding', this.callbacks.onSpeeding)
     }
 
     for (var avatar, i = client.players.items.length - 1; i >= 0; i--) {
@@ -317,6 +319,21 @@ GameController.prototype.onMove = function(client, data)
 
     if (player && player.avatar) {
         player.avatar.updateAngularVelocity(data.move);
+    }
+};
+
+/**
+ * On move
+ *
+ * @param {SocketClient} client
+ * @param {Number} move
+ */
+GameController.prototype.onSpeeding = function(client, data)
+{
+    var player = client.players.getById(data.avatar);
+
+    if (player && player.avatar) {
+        player.avatar.updateSpeeding(data.speeding);
     }
 };
 

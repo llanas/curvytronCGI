@@ -157,6 +157,16 @@ GameController.prototype.onMove = function(e)
 };
 
 /**
+ * On speed
+ *
+ * @param {Event} e
+ */
+GameController.prototype.onSpeeding = function(e)
+{
+    this.client.addEvent('player:speeding', {avatar: e.detail.avatar.id, speeding: e.detail.speeding ? e.detail.speeding : 1});
+};
+
+/**
  * On spectate
  */
 GameController.prototype.onSpectate = function(e)
