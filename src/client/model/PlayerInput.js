@@ -235,7 +235,7 @@ PlayerInput.prototype.resolve = function()
         this.setMove(move);
     }
     if (this.speeding !== speeding) {
-        this.setSpeeding(speeding)
+        this.setSpeeding(speeding);
     }
 };
 
