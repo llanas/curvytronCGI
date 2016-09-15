@@ -331,7 +331,7 @@ GameController.prototype.onMove = function(client, data)
 GameController.prototype.onSpeeding = function(client, data)
 {
     var player = client.players.getById(data.avatar);
-
+    
     if (player && player.avatar) {
         player.avatar.updateSpeeding(data.speeding);
     }

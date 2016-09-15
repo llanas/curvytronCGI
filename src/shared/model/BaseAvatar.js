@@ -141,9 +141,14 @@ BaseAvatar.prototype.updateSpeeding = function(speeding)
 {
     if (typeof(speeding) === 'undefined') {
         this.speeding = 1;
+    } else if (speeding > 1) {
+        this.speeding = 1.3;
+    } else if (speeding < 1) {
+        this.speeding = 0.7;
     } else {
-        this.speeding = speeding;
+        this.speeding = 1;
     }
+    this.updateVelocities();
 };
 /**
  * Set angular velocity
@@ -213,7 +218,7 @@ BaseAvatar.prototype.updatePosition = function(step)
 BaseAvatar.prototype.setVelocity = function(velocity)
 {
     velocity = Math.max(velocity, BaseAvatar.prototype.velocity/2);
-    velocity = velocity * this.speeding;
+
     if (this.velocity !== velocity) {
         this.velocity = velocity;
         this.updateVelocities();
@@ -225,8 +230,7 @@ BaseAvatar.prototype.setVelocity = function(velocity)
  */
 BaseAvatar.prototype.updateVelocities = function()
 {
-    var velocity = this.velocity/1000;
-
+    var velocity = this.velocity * this.speeding / 1000;
     this.velocityX = Math.cos(this.angle) * velocity;
     this.velocityY = Math.sin(this.angle) * velocity;
 

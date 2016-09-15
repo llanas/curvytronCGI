@@ -100,7 +100,8 @@ Player.prototype.onControlChange = function(e)
  */
 Player.prototype.getBinding = function()
 {
-    return [this.controls[0].mapper.value, this.controls[1].mapper.value];
+    //TODO bindings propres ..
+    return [this.controls[0].mapper.value, this.controls[1].mapper.value, 38, 40];
 };
 
 /**

@@ -122,7 +122,7 @@ PlayerInput.prototype.getBindingType = function(binding)
 PlayerInput.prototype.onKeyDown = function(e)
 {
     var index = this.binding.indexOf(e.keyCode);
-
+    
     if (index >= 0) {
         this.setActive(index, true);
     }
@@ -229,7 +229,7 @@ PlayerInput.prototype.setActive = function(index, pressed)
 PlayerInput.prototype.resolve = function()
 {
     var move = (this.active[0] !== this.active[1]) ? (this.active[0] ? -1 : 1) : false;
-    var speeding = (this.active[2] !== this.active[3]) ? (this.active[3] ? -1 : 1) : 0;
+    var speeding = (this.active[2] !== this.active[3]) ? (this.active[3] ? 0.5 : 1.5) : 0;
 
     if (this.move !== move) {
         this.setMove(move);

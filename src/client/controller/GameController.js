@@ -29,6 +29,7 @@ function GameController($scope, $routeParams, $location, client, repository, cha
     // Binding
     this.checkReady   = this.checkReady.bind(this);
     this.onMove       = this.onMove.bind(this);
+    this.onSpeeding   = this.onSpeeding.bind(this);
     this.onSpectate   = this.onSpectate.bind(this);
     this.onUnload     = this.onUnload.bind(this);
     this.onExit       = this.onExit.bind(this);
@@ -104,6 +105,7 @@ GameController.prototype.loadGame = function(game)
         avatar = this.game.avatars.items[i];
         if (avatar.local) {
             avatar.input.on('move', this.onMove);
+            avatar.input.on('speeding', this.onSpeeding);
             if (avatar.input.useGamepad()) {
                 gamepadListener.start();
             }
@@ -163,6 +165,7 @@ GameController.prototype.onMove = function(e)
  */
 GameController.prototype.onSpeeding = function(e)
 {
+    console.log('speedinge:' + e.detail.speeding);
     this.client.addEvent('player:speeding', {avatar: e.detail.avatar.id, speeding: e.detail.speeding ? e.detail.speeding : 1});
 };
 
@@ -250,6 +253,7 @@ GameController.prototype.close = function()
 
         for (var i = avatars.length - 1; i >= 0; i--) {
             avatars[i].input.off('move', this.onMove);
+            avatars[i].input.off('speeding', this.onSpeeding);
         }
 
         delete this.game;
