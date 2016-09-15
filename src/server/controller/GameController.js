@@ -146,7 +146,7 @@ GameController.prototype.attachEvents = function(client)
 
     if (!client.players.isEmpty()) {
         client.on('player:move', this.callbacks.onMove);
-        client.on('player:speeding', this.callbacks.onSpeeding)
+        client.on('player:speeding', this.callbacks.onSpeeding);
     }
 
     for (var avatar, i = client.players.items.length - 1; i >= 0; i--) {
