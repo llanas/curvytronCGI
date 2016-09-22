@@ -53,7 +53,8 @@ BonusAllColor.prototype.getTarget = function(avatar, game)
  */
 BonusAllColor.prototype.getEffects = function(avatar)
 {
-    return [['color', this.getColor(avatar)]];
+   // return [['color', this.getColor(avatar)]];
+    return [['color', '#FFFFFF']];
 };
 
 /**

@@ -25,6 +25,7 @@ function RoundController($scope, repository, notifier)
     this.onRoundNew    = this.onRoundNew.bind(this);
     this.onRoundEnd    = this.onRoundEnd.bind(this);
     this.updateBorders = this.updateBorders.bind(this);
+    this.onBlinkGame   = this.onBlinkGame.bind(this);
     this.onEnd         = this.onEnd.bind(this);
     this.onWarmup      = this.onWarmup.bind(this);
     this.endWarmup     = this.endWarmup.bind(this);
@@ -47,6 +48,7 @@ RoundController.prototype.constructor = RoundController;
 RoundController.prototype.attachEvents = function()
 {
     this.repository.on('borderless', this.updateBorders);
+    this.repository.on('blinkgame', this.onBlinkGame);
     this.repository.on('round:end', this.onRoundEnd);
     this.repository.on('round:new', this.onRoundNew);
     this.repository.on('end', this.onEnd);
@@ -57,6 +59,7 @@ RoundController.prototype.attachEvents = function()
  */
 RoundController.prototype.detachEvents = function()
 {
+    this.repository.off('blinkgame', this.onBlinkGame);
     this.repository.off('borderless', this.updateBorders);
     this.repository.off('round:end', this.onRoundEnd);
     this.repository.off('round:new', this.onRoundNew);
@@ -115,6 +118,15 @@ RoundController.prototype.onEnd = function(e)
 RoundController.prototype.updateBorders = function()
 {
     this.renderElement.classList.toggle('borderless', this.game.borderless);
+};
+
+/**
+ * Update map borders
+ */
+RoundController.prototype.onBlinkGame = function()
+{
+   //this.renderElement
+    //TODO hide game
 };
 
 /**

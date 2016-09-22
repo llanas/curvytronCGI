@@ -26,12 +26,17 @@ function BaseAvatar(player)
     this.ready           = false;
     this.present         = true;
     this.speeding        = 1;
+    this.stamina         = 3;
+    this.staminaDate     = Date.now();
 
     // useless too? this.updateVelocities();
 }
 
 BaseAvatar.prototype = Object.create(EventEmitter.prototype);
 BaseAvatar.prototype.constructor = BaseAvatar;
+
+BaseAvatar.prototype.staminaBase = 3;
+BaseAvatar.prototype.staminaThreshold = 1;
 
 /**
  * Movement velocity
@@ -133,13 +138,13 @@ BaseAvatar.prototype.updateAngularVelocity = function(factor)
 };
 
 /**
-* Update speeding
+* Update speeding called when player starts to change speeding
 *
 * @param {Number} factor
 */
 BaseAvatar.prototype.updateSpeeding = function(speeding)
 {
-    if (typeof(speeding) === 'undefined') {
+    if (typeof(speeding) === 'undefined' | this.stamina < BaseAvatar.prototype.staminaThreshold) {
         this.speeding = 1;
     } else if (speeding > 1) {
         this.speeding = 1.3;
@@ -225,12 +230,38 @@ BaseAvatar.prototype.setVelocity = function(velocity)
     }
 };
 
+BaseAvatar.prototype.setStamina = function(stamina) {
+    this.stamina = stamina;
+    console.log('stamina ' + stamina);
+};
+
 /**
  * Update velocities
  */
 BaseAvatar.prototype.updateVelocities = function()
 {
-    var velocity = this.velocity * this.speeding / 1000;
+    var speeding = 1;
+    if (this.speeding > 1.01 || this.speeding < 0.99) {
+        if(this.stamina > 0) {
+            speeding = this.speeding;
+            if(this.staminaDate < (Date.now() - 500)) {
+                this.stamina = this.stamina - 0.5;
+                this.staminaDate = Date.now();
+            }
+        } else {
+            console.log('No stamina !');
+            this.speeding = 1;
+        }
+    } else if (this.stamina < BaseAvatar.prototype.staminaBase) {
+        if(this.staminaDate < (Date.now() - 500)) {
+            this.stamina = this.stamina + 0.16;
+            this.staminaDate = Date.now();
+        }
+    } else if (this.stamina > BaseAvatar.prototype.staminaBase) {
+        this.stamina = BaseAvatar.prototype.staminaBase;
+    }
+
+    var velocity = this.velocity * speeding / 1000;
     this.velocityX = Math.cos(this.angle) * velocity;
     this.velocityY = Math.sin(this.angle) * velocity;
 

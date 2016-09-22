@@ -58,6 +58,7 @@ Avatar.prototype.update = function(step)
     if (!this.changed && this.alive) {
         this.updateAngle(step);
         this.updatePosition(step);
+        this.updateVelocities();
     }
 
     this.startX  = this.canvas.round(this.x * this.canvas.scale - this.canvasRadius);
