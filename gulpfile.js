@@ -8,8 +8,8 @@ var fs        = require('fs'),
     rename    = require('gulp-rename'),
     plumber   = require('gulp-plumber'),
     gutil     = require('gulp-util'),
-    minifyCSS = require('gulp-minify-css'),
-    htmlmin   = require('gulp-html-minifier'),
+    cleanCss  = require('gulp-clean-css'),
+    htmlmin   = require('gulp-htmlmin'),
     replace   = require('gulp-replace'),
     wrap      = require('gulp-wrap'),
     meta      = require('./package.json'),
@@ -18,7 +18,7 @@ var fs        = require('fs'),
     try {
         config = require('./config.json');
     } catch (error) {
-        config = { googleAnalyticsId: null };
+        config = { googleAnalyticsId: null }
     }
 
     var jsDir   = './web/js/',
@@ -53,15 +53,15 @@ var onError = function (err) {
     gutil.beep();
     console.log(err.toString());
     this.emit('end');
-};
+}
 
-gulp.task('jshint', function() {
+function jshintFull() {
     return gulp.src('src/**/*.js')
         .pipe(jshint())
-        .pipe(jshint.reporter());
-});
+        .pipe(jshint.reporter('default'));
+}
 
-gulp.task('front-expose', function() {
+function frontExpose() {
     for (var i = expose.length - 1; i >= 0; i--) {
         gulp.src(expose[i]).pipe(gulp.dest(recipes.client.path));
     }
@@ -70,26 +70,26 @@ gulp.task('front-expose', function() {
         .pipe(concat('dependencies.js'))
         .pipe(uglify())
         .pipe(gulp.dest(recipes.client.path));
-});
+}
 
-gulp.task('front-full', function() {
+function frontFull() {
     return gulp.src(recipes.client.files)
         .pipe(concat(recipes.client.name))
         .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
         .pipe(header(banner, meta))
         .pipe(gulp.dest(recipes.client.path));
-});
+}
 
-gulp.task('front-min', function(){
+function frontMin() {
     return gulp.src(recipes.client.files)
         .pipe(concat(recipes.client.name))
         .pipe(uglify())
         .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
         .pipe(header(banner, meta))
         .pipe(gulp.dest(recipes.client.path));
-});
+}
 
-gulp.task('ga', function() {
+function ga() {
     var source = gulp.src('./src/client/views/index.html');
 
     if (typeof(config.googleAnalyticsId) !== 'undefined' && config.googleAnalyticsId) {
@@ -102,51 +102,56 @@ gulp.task('ga', function() {
     return source
         .pipe(htmlmin({collapseWhitespace: true}))
         .pipe(gulp.dest('./web'));
-});
+}
 
-gulp.task('views', function() {
+function views() {
     return gulp.src('src/client/views/*/**/*.html')
         .pipe(htmlmin({collapseWhitespace: true}))
         .pipe(gulp.dest(jsDir + 'views'));
-});
+}
 
-gulp.task('server', function() {
+function server() {
     return gulp.src(recipes.server.files)
         .pipe(concat(recipes.server.name))
         .pipe(gulp.dest(recipes.server.path));
-});
+}
 
-gulp.task('sass-full', function() {
+function sassFull() {
     return gulp.src(sassDir + 'style.scss')
         .pipe(plumber({ errorHandler: onError }))
         .pipe(sass())
         .pipe(rename('style.css'))
         .pipe(gulp.dest(cssDir));
-});
+}
 
-gulp.task('sass-min', function() {
+async function sassMin() {
     return gulp.src(sassDir + 'style.scss')
-        .pipe(plumber({ errorHandler: onError }))
-        .pipe(sass())
-        .pipe(minifyCSS())
+        .pipe(sass().on('error', sass.logError))
         .pipe(rename('style.css'))
         .pipe(gulp.dest(cssDir));
-});
+}
 
-gulp.task('copy-stress-test', function() {
+function copyStressTest() {
     return gulp.src('src/client/stressTest.js')
         .pipe(gulp.dest(recipes.client.path));
-});
+}
 
-gulp.task('watch', ['dev'], function () {
-    gulp.watch('src/shared/**/*.js', ['jshint', 'server', 'front-full']);
-    gulp.watch('src/client/**/*.js', ['jshint', 'front-full']);
-    gulp.watch('src/server/**/*.js', ['jshint', 'server']);
-    gulp.watch('src/client/views/*/*.html', ['views']);
-    gulp.watch('src/client/views/*.html', ['ga']);
-    gulp.watch('src/client/stressTest.js', ['copy-stress-test']);
-    gulp.watch('src/sass/**/*.scss', ['sass-full']);
-});
+function watchFiles() {
+    gulp.watch('src/shared/**/*.js', gulp.parallel(jshintFull, server, frontFull));
+    gulp.watch('src/client/**/*.js', gulp.parallel(jshintFull, frontFull));
+    gulp.watch('src/server/**/*.js', gulp.parallel(jshintFull, server));
+    gulp.watch('src/client/views/*/*.html', views);
+    gulp.watch('src/client/views/*.html', ga);
+    gulp.watch('src/client/stressTest.js', copyStressTest);
+    gulp.watch('src/sass/**/*.scss', sassFull);
+    done();
+}
 
-gulp.task('default', ['jshint', 'server', 'front-expose', 'ga', 'views', 'front-min', 'sass-min']);
-gulp.task('dev', ['jshint', 'server', 'front-expose', 'copy-stress-test', 'ga', 'views', 'front-full', 'sass-full']);
+const bundle = gulp.parallel(jshintFull, server, frontExpose, ga, views, frontMin, sassMin);
+const dev = gulp.parallel(jshintFull, server, frontExpose, copyStressTest, ga, views, frontFull, sassFull);
+
+const watch = gulp.series(dev, watchFiles);
+
+exports.bundle = bundle;
+exports.dev = dev;
+exports.watch = watch;

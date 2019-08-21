@@ -24,6 +24,9 @@
     }
   ],
   "main": "dist/curvytron.min.js",
+  "resolutions": {
+    "angular": "1.4.3"
+  },
   "dependencies": {
     "tom32i-event-emitter.js": "~0.1.*",
     "tom32i-gamepad.js": "~0.1.*",
@@ -32,6 +35,7 @@
     "tom32i-asset-loader.js": "~0.0.*",
     "html5-boilerplate": "~4.3.0",
     "angular": "1.4.3",
+    "angular-aria": "~1.4.3",
     "angular-route": "~1.4.3",
     "angular-cookies": "~1.4.3",
     "createjs-soundjs": "0.6.1",
