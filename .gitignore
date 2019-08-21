@@ -7,4 +7,5 @@ web/index.html
 bin/*
 stats/*
 config.json
+package-lock.json
 *.sublime-*

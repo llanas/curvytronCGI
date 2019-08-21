@@ -65,8 +65,9 @@ BonusManager.prototype.popBonus = function ()
             var bonusType = this.getRandomBonusType();
 
             if (bonusType) {
+                var BonusType = (bonusType);
                 var position = this.getRandomPosition(BaseBonus.prototype.radius, this.bonusPopingMargin),
-                    bonus    = new (bonusType)(position[0], position[1]);
+                    bonus    = new BonusType(position[0], position[1]);
                 this.add(bonus);
             }
         }
