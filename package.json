@@ -2,6 +2,9 @@
   "name": "curvytron",
   "version": "1.4.5",
   "description": "A web multiplayer Tron game like... with curves!",
+  "engines" : {
+    "node" : ">=6.0"
+  },
   "keywords": [
     "tron",
     "game",
