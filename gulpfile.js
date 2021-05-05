@@ -124,7 +124,7 @@ function sassFull() {
         .pipe(gulp.dest(cssDir));
 }
 
-async function sassMin() {
+function sassMin() {
     return gulp.src(sassDir + 'style.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(rename('style.css'))
@@ -155,3 +155,4 @@ const watch = gulp.series(dev, watchFiles);
 exports.bundle = bundle;
 exports.dev = dev;
 exports.watch = watch;
+exports.default = bundle;
